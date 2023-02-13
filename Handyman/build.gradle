@@ -17,6 +17,10 @@ repositories {
     mavenCentral()
 }
 
+springBoot {
+    buildInfo()
+}
+
 compileJava {
     options.encoding('UTF-8')
 }
@@ -42,6 +46,8 @@ dependencies {
     implementation 'org.flywaydb:flyway-core:9.10.1'
     implementation 'io.swagger.core.v3:swagger-annotations:2.2.6'
     compileOnly 'org.projectlombok:lombok'
+    compileOnly 'org.springframework.metrics:spring-metrics:0.5.1.RELEASE'
+    compileOnly 'io.prometheus:simpleclient_common:0.16.0'
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
