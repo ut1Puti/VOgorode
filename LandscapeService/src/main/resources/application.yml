@@ -11,3 +11,7 @@ management:
     export:
       prometheus:
         enabled: true
+grpc:
+  client:
+    StatusService:
+      address: "static://localhost:9090"
