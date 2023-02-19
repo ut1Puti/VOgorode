@@ -14,7 +14,7 @@ public class StatusServiceController {
     private final StatusServiceService statusServiceService;
 
     @GetMapping("")
-    public Map<String, ServiceStatus> getServicesStatus() {
+    public Map<String, StatusService> getServicesStatus() {
         return statusServiceService.getServicesStatuses();
     }
 }

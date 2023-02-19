@@ -13,5 +13,9 @@ management:
         enabled: true
 grpc:
   client:
-    StatusService:
+    HandymanService:
       address: "static://localhost:9090"
+      negotiation-type: PLAINTEXT
+    RancherService:
+      address: "static://localhost:9091"
+      negotiation-type: PLAINTEXT

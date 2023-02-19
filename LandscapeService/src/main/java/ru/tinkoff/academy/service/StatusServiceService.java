@@ -13,17 +13,21 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class StatusServiceService {
-    @GrpcClient("StatusService")
-    private final StatusServiceGrpc.StatusServiceBlockingStub statusServiceStub;
+    @GrpcClient("HandymanService")
+    private StatusServiceGrpc.StatusServiceBlockingStub handymanStatusServiceBlockingStub;
 
-    public Map<String, ServiceStatus> getServicesStatuses() {
-        return Map.of("hello", getServiceStatus());
+    @GrpcClient("RancherService")
+    private StatusServiceGrpc.StatusServiceBlockingStub rancherStatusServiceBlockingStub;
+
+    public Map<String, StatusService> getServicesStatuses() {
+        return Map.of("HandymanService", getServiceStatus(handymanStatusServiceBlockingStub),
+                "RancherService", getServiceStatus(rancherStatusServiceBlockingStub));
     }
 
-    public ServiceStatus getServiceStatus() {
-        ReadinessResponse readinessResponse = statusServiceStub.getReadiness(Empty.newBuilder().build());
-        VersionResponse versionResponse = statusServiceStub.getVersion(Empty.newBuilder().build());
-        return ServiceStatus.builder()
+    public StatusService getServiceStatus(StatusServiceGrpc.StatusServiceBlockingStub statusServiceBlockingStub) {
+        ReadinessResponse readinessResponse = statusServiceBlockingStub.getReadiness(Empty.newBuilder().build());
+        VersionResponse versionResponse = statusServiceBlockingStub.getVersion(Empty.newBuilder().build());
+        return StatusService.builder()
                 .status(readinessResponse.getStatus())
                 .artifact(versionResponse.getArtifact())
                 .name(versionResponse.getName())

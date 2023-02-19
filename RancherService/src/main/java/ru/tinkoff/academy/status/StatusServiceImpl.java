@@ -26,10 +26,10 @@ public class StatusServiceImpl extends StatusServiceGrpc.StatusServiceImplBase {
     @Override
     public void getVersion(Empty request, StreamObserver<VersionResponse> responseObserver) {
         VersionResponse versionResponse = VersionResponse.newBuilder()
-                .setArtifact(buildProperties.getArtifact())
-                .setName(buildProperties.getName())
-                .setGroup(buildProperties.getGroup())
                 .setVersion(buildProperties.getVersion())
+                .setGroup(buildProperties.getGroup())
+                .setName(buildProperties.getName())
+                .setArtifact(buildProperties.getArtifact())
                 .build();
         responseObserver.onNext(versionResponse);
         responseObserver.onCompleted();

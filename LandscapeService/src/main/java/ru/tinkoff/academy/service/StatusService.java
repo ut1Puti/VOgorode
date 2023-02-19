@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class ServiceStatus {
+public class StatusService {
     private String host;
     private String status;
     private String artifact;

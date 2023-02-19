@@ -33,10 +33,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-registry-prometheus:1.10.3'
     implementation 'net.devh:grpc-server-spring-boot-starter:2.13.1.RELEASE'
-    implementation 'io.grpc:grpc-protobuf:1.52.1'
-    implementation 'io.grpc:grpc-stub:1.52.1'
     compileOnly 'org.projectlombok:lombok'
-    runtimeOnly 'io.grpc:grpc-netty-shaded:1.52.1'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.testcontainers:junit-jupiter'
@@ -66,11 +63,11 @@ test {
 
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:3.21.7"
+        artifact = "com.google.protobuf:protoc:3.21.6"
     }
     plugins {
         grpc {
-            artifact = 'io.grpc:protoc-gen-grpc-java:1.52.1'
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.42.2'
         }
     }
     generateProtoTasks {
