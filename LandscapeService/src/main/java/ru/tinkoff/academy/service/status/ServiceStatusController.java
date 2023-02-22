@@ -14,6 +14,11 @@ import java.util.Map;
 public class ServiceStatusController {
     private final ServiceStatusService serviceStatusService;
 
+    /**
+     * Get connected services {@link ServiceStatus}
+     *
+     * @return {@code Map} with Services name as key and ServiceStatus as value
+     */
     @GetMapping("")
     public Map<String, List<ServiceStatus>> getServicesStatus() {
         return serviceStatusService.getServicesStatuses();

@@ -14,6 +14,12 @@ import ru.tinkoff.academy.proto.VersionResponse;
 public class ServiceStatusImpl extends ServiceStatusGrpc.ServiceStatusImplBase {
     private final BuildProperties buildProperties;
 
+    /**
+     * Get Readiness state of server
+     *
+     * @param request          empty gRPC request to server
+     * @param responseObserver response observer for sending stream message
+     */
     @Override
     public void getReadiness(Empty request, StreamObserver<ReadinessResponse> responseObserver) {
         ReadinessResponse readinessResponse = ReadinessResponse.newBuilder()
@@ -23,6 +29,12 @@ public class ServiceStatusImpl extends ServiceStatusGrpc.ServiceStatusImplBase {
         responseObserver.onCompleted();
     }
 
+    /**
+     * Get build Version of service
+     *
+     * @param request empty gRPC request to server
+     * @param responseObserver response observer for sending stream message
+     */
     @Override
     public void getVersion(Empty request, StreamObserver<VersionResponse> responseObserver) {
         VersionResponse versionResponse = VersionResponse.newBuilder()
