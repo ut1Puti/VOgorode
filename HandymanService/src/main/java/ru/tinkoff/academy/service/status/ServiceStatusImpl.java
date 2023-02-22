@@ -1,4 +1,4 @@
-package ru.tinkoff.academy.status;
+package ru.tinkoff.academy.service.status;
 
 import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
@@ -26,10 +26,10 @@ public class ServiceStatusImpl extends ServiceStatusGrpc.ServiceStatusImplBase {
     @Override
     public void getVersion(Empty request, StreamObserver<VersionResponse> responseObserver) {
         VersionResponse versionResponse = VersionResponse.newBuilder()
-                .setVersion(buildProperties.getVersion())
-                .setGroup(buildProperties.getGroup())
-                .setName(buildProperties.getName())
                 .setArtifact(buildProperties.getArtifact())
+                .setName(buildProperties.getName())
+                .setGroup(buildProperties.getGroup())
+                .setVersion(buildProperties.getVersion())
                 .build();
         responseObserver.onNext(versionResponse);
         responseObserver.onCompleted();

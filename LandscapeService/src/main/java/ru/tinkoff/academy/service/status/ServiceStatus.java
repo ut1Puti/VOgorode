@@ -1,4 +1,4 @@
-package ru.tinkoff.academy.service;
+package ru.tinkoff.academy.service.status;
 
 import lombok.Builder;
 import lombok.Data;

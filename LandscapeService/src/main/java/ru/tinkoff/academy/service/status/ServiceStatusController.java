@@ -1,4 +1,4 @@
-package ru.tinkoff.academy.service;
+package ru.tinkoff.academy.service.status;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

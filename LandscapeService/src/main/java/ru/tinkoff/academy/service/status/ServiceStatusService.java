@@ -1,4 +1,4 @@
-package ru.tinkoff.academy.service;
+package ru.tinkoff.academy.service.status;
 
 import com.google.protobuf.Empty;
 import net.devh.boot.grpc.client.inject.GrpcClient;
