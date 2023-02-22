@@ -14,8 +14,8 @@ management:
 grpc:
   client:
     HandymanService:
-      address: "static://localhost:9090"
+      address: "localhost:9090"
       negotiation-type: PLAINTEXT
     RancherService:
-      address: "static://localhost:9091"
+      address: "localhost:9091"
       negotiation-type: PLAINTEXT

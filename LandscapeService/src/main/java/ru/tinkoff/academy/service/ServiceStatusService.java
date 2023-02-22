@@ -1,33 +1,33 @@
 package ru.tinkoff.academy.service;
 
 import com.google.protobuf.Empty;
-import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
 import ru.tinkoff.academy.proto.ReadinessResponse;
-import ru.tinkoff.academy.proto.StatusServiceGrpc;
+import ru.tinkoff.academy.proto.ServiceStatusGrpc;
 import ru.tinkoff.academy.proto.VersionResponse;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
-@RequiredArgsConstructor
-public class StatusServiceService {
+public class ServiceStatusService {
     @GrpcClient("HandymanService")
-    private StatusServiceGrpc.StatusServiceBlockingStub handymanStatusServiceBlockingStub;
+    private ServiceStatusGrpc.ServiceStatusBlockingStub handymanStatusServiceBlockingStub;
 
     @GrpcClient("RancherService")
-    private StatusServiceGrpc.StatusServiceBlockingStub rancherStatusServiceBlockingStub;
+    private ServiceStatusGrpc.ServiceStatusBlockingStub rancherStatusServiceBlockingStub;
 
-    public Map<String, StatusService> getServicesStatuses() {
-        return Map.of("HandymanService", getServiceStatus(handymanStatusServiceBlockingStub),
-                "RancherService", getServiceStatus(rancherStatusServiceBlockingStub));
+    public Map<String, List<ServiceStatus>> getServicesStatuses() {
+        return Map.of("HandymanService", List.of(getServiceStatus(handymanStatusServiceBlockingStub)),
+                "RancherService", List.of(getServiceStatus(rancherStatusServiceBlockingStub)));
     }
 
-    public StatusService getServiceStatus(StatusServiceGrpc.StatusServiceBlockingStub statusServiceBlockingStub) {
+    private ServiceStatus getServiceStatus(ServiceStatusGrpc.ServiceStatusBlockingStub statusServiceBlockingStub) {
         ReadinessResponse readinessResponse = statusServiceBlockingStub.getReadiness(Empty.newBuilder().build());
         VersionResponse versionResponse = statusServiceBlockingStub.getVersion(Empty.newBuilder().build());
-        return StatusService.builder()
+        return ServiceStatus.builder()
+                .host(statusServiceBlockingStub.getChannel().authority())
                 .status(readinessResponse.getStatus())
                 .artifact(versionResponse.getArtifact())
                 .name(versionResponse.getName())

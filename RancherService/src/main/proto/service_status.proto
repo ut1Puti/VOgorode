@@ -6,7 +6,7 @@ package ru.tinkoff.academy;
 option java_package = "ru.tinkoff.academy.proto";
 option java_multiple_files = true;
 
-service StatusService {
+service ServiceStatus {
   rpc getVersion(google.protobuf.Empty) returns (VersionResponse);
   rpc getReadiness(google.protobuf.Empty) returns (ReadinessResponse);
 }

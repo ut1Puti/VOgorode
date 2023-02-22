@@ -5,16 +5,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/services")
+@RequestMapping("/services/status")
 @RequiredArgsConstructor
-public class StatusServiceController {
-    private final StatusServiceService statusServiceService;
+public class ServiceStatusController {
+    private final ServiceStatusService serviceStatusService;
 
     @GetMapping("")
-    public Map<String, StatusService> getServicesStatus() {
-        return statusServiceService.getServicesStatuses();
+    public Map<String, List<ServiceStatus>> getServicesStatus() {
+        return serviceStatusService.getServicesStatuses();
     }
 }

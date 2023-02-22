@@ -6,12 +6,12 @@ import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.boot.info.BuildProperties;
 import ru.tinkoff.academy.proto.ReadinessResponse;
-import ru.tinkoff.academy.proto.StatusServiceGrpc;
+import ru.tinkoff.academy.proto.ServiceStatusGrpc;
 import ru.tinkoff.academy.proto.VersionResponse;
 
 @GrpcService
 @RequiredArgsConstructor
-public class StatusServiceImpl extends StatusServiceGrpc.StatusServiceImplBase {
+public class ServiceStatusImpl extends ServiceStatusGrpc.ServiceStatusImplBase {
     private final BuildProperties buildProperties;
 
     @Override
