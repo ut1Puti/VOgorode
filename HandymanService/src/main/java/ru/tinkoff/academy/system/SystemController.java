@@ -18,7 +18,7 @@ public class SystemController {
      * Check service liveness
      */
     @GetMapping("/liveness")
-    public void liveness() {
+    public void getLiveness() {
 
     }
 
