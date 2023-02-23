@@ -17,7 +17,9 @@
 
         Rancherservice - 9091
 
-    При изменении портов необходимо изменить адреса серверов в LandscapeService. Имена сервисов совпадают.
+    При изменении портов необходимо изменить адреса серверов в LandscapeService. Имена сервисов совпадают. 
+    Если необходимо добавить дополнительные instance'ы сервисов, надо добавить адреса сервисов в LandscapeService. 
+    В имени сервисов в application.yml должны быть HandymanService или RancherService соответсвенно RancherService или HandymanService instance'ам.
 
 2) При необходимости получить код генерируемый из .proto файлов использовать ./gradlew generateProto, если это не надо, то можно пропустить этот этап.
 

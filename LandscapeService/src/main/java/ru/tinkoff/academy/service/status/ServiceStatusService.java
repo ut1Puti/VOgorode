@@ -1,34 +1,65 @@
 package ru.tinkoff.academy.service.status;
 
 import com.google.protobuf.Empty;
-import net.devh.boot.grpc.client.inject.GrpcClient;
+import io.grpc.Channel;
+import io.grpc.ConnectivityState;
+import io.grpc.StatusRuntimeException;
+import lombok.RequiredArgsConstructor;
+import net.devh.boot.grpc.client.channelfactory.GrpcChannelFactory;
+import net.devh.boot.grpc.client.config.GrpcChannelsProperties;
 import org.springframework.stereotype.Service;
-import ru.tinkoff.academy.proto.ReadinessResponse;
 import ru.tinkoff.academy.proto.ServiceStatusGrpc;
 import ru.tinkoff.academy.proto.VersionResponse;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class ServiceStatusService {
-    @GrpcClient("HandymanService")
-    private ServiceStatusGrpc.ServiceStatusBlockingStub handymanStatusServiceBlockingStub;
+    private final GrpcChannelsProperties grpcChannelsProperties;
+    private final GrpcChannelFactory grpcChannelFactory;
 
-    @GrpcClient("RancherService")
-    private ServiceStatusGrpc.ServiceStatusBlockingStub rancherStatusServiceBlockingStub;
-
+    /**
+     * Get connected to defined in application.yml grpc servers statuses
+     *
+     * @return {@link Map} with service name as key and {@link ServiceStatus} as value
+     */
     public Map<String, List<ServiceStatus>> getServicesStatuses() {
-        return Map.of("HandymanService", List.of(getServiceStatus(handymanStatusServiceBlockingStub)),
-                "RancherService", List.of(getServiceStatus(rancherStatusServiceBlockingStub)));
+        Map<String, List<ServiceStatus>> connectedToServicesStatus = new HashMap<>();
+        for (String connectedToServiceName : grpcChannelsProperties.getClient().keySet()) {
+            String serviceName = mapValidServiceName(connectedToServiceName);
+            connectedToServicesStatus.computeIfAbsent(serviceName, key -> new ArrayList<>());
+            try {
+                connectedToServicesStatus.get(serviceName).add(getServiceStatus(connectedToServiceName));
+            } catch (StatusRuntimeException ignored) {
+            }
+        }
+        return connectedToServicesStatus;
     }
 
-    private ServiceStatus getServiceStatus(ServiceStatusGrpc.ServiceStatusBlockingStub statusServiceBlockingStub) {
-        ReadinessResponse readinessResponse = statusServiceBlockingStub.getReadiness(Empty.newBuilder().build());
-        VersionResponse versionResponse = statusServiceBlockingStub.getVersion(Empty.newBuilder().build());
+    private String mapValidServiceName(String serviceName) {
+        List<String> mapValidServicesName = List.of("HandymanService", "RancherService");
+        for (String mapValidServiceName : mapValidServicesName) {
+
+            if (serviceName.contains(mapValidServiceName)) {
+                return mapValidServiceName;
+            }
+
+        }
+        return serviceName;
+    }
+
+    private ServiceStatus getServiceStatus(String serviceName) {
+        Channel serviceChannel = grpcChannelFactory.createChannel(serviceName);
+        ServiceStatusGrpc.ServiceStatusBlockingStub serviceStatusBlockingStub = ServiceStatusGrpc.newBlockingStub(serviceChannel);
+        VersionResponse versionResponse = serviceStatusBlockingStub.getVersion(Empty.getDefaultInstance());
+        ConnectivityState connectivityState = grpcChannelFactory.getConnectivityState().get(serviceName);
         return ServiceStatus.builder()
-                .host(statusServiceBlockingStub.getChannel().authority())
-                .status(readinessResponse.getStatus())
+                .host(serviceStatusBlockingStub.getChannel().authority())
+                .status(connectivityState.name())
                 .artifact(versionResponse.getArtifact())
                 .name(versionResponse.getName())
                 .group(versionResponse.getGroup())

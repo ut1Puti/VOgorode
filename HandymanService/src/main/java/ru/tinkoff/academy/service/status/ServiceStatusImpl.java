@@ -32,7 +32,7 @@ public class ServiceStatusImpl extends ServiceStatusGrpc.ServiceStatusImplBase {
     /**
      * Get build Version of service
      *
-     * @param request empty gRPC request to server
+     * @param request          empty gRPC request to server
      * @param responseObserver response observer for sending stream message
      */
     @Override

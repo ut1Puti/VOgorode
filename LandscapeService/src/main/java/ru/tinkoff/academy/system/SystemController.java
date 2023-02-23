@@ -18,14 +18,14 @@ public class SystemController {
      * Check service liveness
      */
     @GetMapping("/liveness")
-    public void liveness() {
+    public void getLiveness() {
 
     }
 
     /**
      * Check service readiness
      *
-     * @return Map with service name as key and readiness status as value
+     * @return {@link Map} with service name as key and readiness status as value
      */
     @GetMapping("/readiness")
     public Map<String, String> getReadiness() {
