@@ -31,11 +31,13 @@ public class ServiceStatusService {
         Map<String, List<ServiceStatus>> connectedToServicesStatus = new HashMap<>();
         for (String connectedToServiceName : grpcChannelsProperties.getClient().keySet()) {
             String serviceName = mapValidServiceName(connectedToServiceName);
-            connectedToServicesStatus.computeIfAbsent(serviceName, key -> new ArrayList<>());
-            try {
-                connectedToServicesStatus.get(serviceName).add(getServiceStatus(connectedToServiceName));
-            } catch (StatusRuntimeException ignored) {
+
+            if (serviceName == null) {
+                continue;
             }
+
+            connectedToServicesStatus.computeIfAbsent(serviceName, key -> new ArrayList<>());
+            connectedToServicesStatus.get(serviceName).add(getServiceStatus(connectedToServiceName));
         }
         return connectedToServicesStatus;
     }
@@ -49,14 +51,22 @@ public class ServiceStatusService {
             }
 
         }
-        return serviceName;
+        return null;
     }
 
     private ServiceStatus getServiceStatus(String serviceName) {
         Channel serviceChannel = grpcChannelFactory.createChannel(serviceName);
         ServiceStatusGrpc.ServiceStatusBlockingStub serviceStatusBlockingStub = ServiceStatusGrpc.newBlockingStub(serviceChannel);
-        VersionResponse versionResponse = serviceStatusBlockingStub.getVersion(Empty.getDefaultInstance());
         ConnectivityState connectivityState = grpcChannelFactory.getConnectivityState().get(serviceName);
+
+        if (isConnectionOk(connectivityState)) {
+            return ServiceStatus.builder()
+                    .host(serviceStatusBlockingStub.getChannel().authority())
+                    .status(connectivityState.name())
+                    .build();
+        }
+
+        VersionResponse versionResponse = serviceStatusBlockingStub.getVersion(Empty.getDefaultInstance());
         return ServiceStatus.builder()
                 .host(serviceStatusBlockingStub.getChannel().authority())
                 .status(connectivityState.name())
@@ -65,5 +75,9 @@ public class ServiceStatusService {
                 .group(versionResponse.getGroup())
                 .version(versionResponse.getVersion())
                 .build();
+    }
+
+    private boolean isConnectionOk(ConnectivityState connectivityState) {
+        return !connectivityState.equals(ConnectivityState.SHUTDOWN) && !connectivityState.equals(ConnectivityState.TRANSIENT_FAILURE);
     }
 }
