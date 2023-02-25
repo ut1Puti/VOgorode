@@ -3,7 +3,6 @@ package ru.tinkoff.academy.service.status;
 import com.google.protobuf.Empty;
 import io.grpc.Channel;
 import io.grpc.ConnectivityState;
-import io.grpc.StatusRuntimeException;
 import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.client.channelfactory.GrpcChannelFactory;
 import net.devh.boot.grpc.client.config.GrpcChannelsProperties;
@@ -60,20 +59,20 @@ public class ServiceStatusService {
         ConnectivityState connectivityState = grpcChannelFactory.getConnectivityState().get(serviceName);
 
         if (isConnectionOk(connectivityState)) {
+            VersionResponse versionResponse = serviceStatusBlockingStub.getVersion(Empty.getDefaultInstance());
             return ServiceStatus.builder()
                     .host(serviceStatusBlockingStub.getChannel().authority())
                     .status(connectivityState.name())
+                    .artifact(versionResponse.getArtifact())
+                    .name(versionResponse.getName())
+                    .group(versionResponse.getGroup())
+                    .version(versionResponse.getVersion())
                     .build();
         }
 
-        VersionResponse versionResponse = serviceStatusBlockingStub.getVersion(Empty.getDefaultInstance());
         return ServiceStatus.builder()
                 .host(serviceStatusBlockingStub.getChannel().authority())
                 .status(connectivityState.name())
-                .artifact(versionResponse.getArtifact())
-                .name(versionResponse.getName())
-                .group(versionResponse.getGroup())
-                .version(versionResponse.getVersion())
                 .build();
     }
 
