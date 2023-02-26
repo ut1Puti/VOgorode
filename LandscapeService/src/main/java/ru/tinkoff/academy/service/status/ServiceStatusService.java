@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.client.channelfactory.GrpcChannelFactory;
 import net.devh.boot.grpc.client.config.GrpcChannelsProperties;
 import org.springframework.stereotype.Service;
+import ru.tinkoff.academy.proto.ReadinessResponse;
 import ru.tinkoff.academy.proto.ServiceStatusGrpc;
 import ru.tinkoff.academy.proto.VersionResponse;
 
@@ -55,28 +56,33 @@ public class ServiceStatusService {
 
     private ServiceStatus getServiceStatus(String serviceName) {
         Channel serviceChannel = grpcChannelFactory.createChannel(serviceName);
-        ServiceStatusGrpc.ServiceStatusBlockingStub serviceStatusBlockingStub = ServiceStatusGrpc.newBlockingStub(serviceChannel);
         ConnectivityState connectivityState = grpcChannelFactory.getConnectivityState().get(serviceName);
 
         if (isConnectionOk(connectivityState)) {
-            VersionResponse versionResponse = serviceStatusBlockingStub.getVersion(Empty.getDefaultInstance());
-            return ServiceStatus.builder()
-                    .host(serviceStatusBlockingStub.getChannel().authority())
-                    .status(connectivityState.name())
-                    .artifact(versionResponse.getArtifact())
-                    .name(versionResponse.getName())
-                    .group(versionResponse.getGroup())
-                    .version(versionResponse.getVersion())
-                    .build();
+            return getServiceStatus(serviceChannel);
         }
 
         return ServiceStatus.builder()
-                .host(serviceStatusBlockingStub.getChannel().authority())
+                .host(serviceChannel.authority())
                 .status(connectivityState.name())
                 .build();
     }
 
     private boolean isConnectionOk(ConnectivityState connectivityState) {
         return !connectivityState.equals(ConnectivityState.SHUTDOWN) && !connectivityState.equals(ConnectivityState.TRANSIENT_FAILURE);
+    }
+
+    private ServiceStatus getServiceStatus(Channel serviceChannel) {
+        ServiceStatusGrpc.ServiceStatusBlockingStub serviceStatusBlockingStub = ServiceStatusGrpc.newBlockingStub(serviceChannel);
+        ReadinessResponse readinessResponse = serviceStatusBlockingStub.getReadiness(Empty.getDefaultInstance());
+        VersionResponse versionResponse = serviceStatusBlockingStub.getVersion(Empty.getDefaultInstance());
+        return ServiceStatus.builder()
+                .host(serviceStatusBlockingStub.getChannel().authority())
+                .status(readinessResponse.getStatus())
+                .artifact(versionResponse.getArtifact())
+                .name(versionResponse.getName())
+                .group(versionResponse.getGroup())
+                .version(versionResponse.getVersion())
+                .build();
     }
 }
