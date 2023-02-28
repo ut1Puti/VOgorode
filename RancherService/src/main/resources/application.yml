@@ -1,0 +1,13 @@
+server:
+  port: 8081
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "info,prometheus"
+      path-mapping:
+        prometheus: "/metrics"
+  metrics:
+    export:
+      prometheus:
+        enabled: true
