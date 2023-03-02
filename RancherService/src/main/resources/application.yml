@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: ${SERVER_PORT:8081}
 management:
   endpoints:
     web:
@@ -11,3 +11,6 @@ management:
     export:
       prometheus:
         enabled: true
+grpc:
+  server:
+    port: ${GRPC_SERVER_PORT:9091}
