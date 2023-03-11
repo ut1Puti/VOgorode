@@ -32,3 +32,14 @@ LanscapeService использует переменные **RANCHER_GRPC_SERVER_
         RANCHER_GRPC_SERVER_ADDRESS - localhost:9090
 
         HANDYMAN_GRPC_SERVER_ADDRESS - localhost:9091
+
+Все сервисы используют postgres в качестве базы данных. Для подключения к ней используются следующие переменные: 
+**POSTGRES_DB_URL**, **POSTGRES_USER**, **POSTGRES_PASSWORD**.
+
+    Дефолтные значения переменных в сервисах:
+
+        POSTGRES_DB_URL - jdbc:postgresql://localhost:5432/vogorode
+
+        POSTGRES_USER - postgres
+
+        POSTGRES_PASSWORD - 123
