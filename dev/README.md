@@ -53,12 +53,10 @@
 
 **Запуск с использованием docker-compose**
 
-1) Обновить или создать image'ы с использованием скрипта [build-images.bat](./scripts/build-images.bat) или [build-images.sh](./scripts/build-images.sh)
-
-2) Для запуска приложения обязательным является переопределение **RANCHER_GRPC_SERVER_ADDRESS** и **HANDYMAN_GRPC_SERVER_ADDRESS** в сервисе LandscapeService.
+1) Для запуска приложения обязательным является переопределение **RANCHER_GRPC_SERVER_ADDRESS** и **HANDYMAN_GRPC_SERVER_ADDRESS** в сервисе LandscapeService.
 В docker-compose они переопределены как 'rancher-service:9091' и 'handyman-service:9090' соответсвенно. 
 
-3) После командой docker-compose up запустить сервис.
+2) После командой docker-compose up запустить сервис.
 
 ![./docker/docker_photo/docker-compose_ok.jpg](./docker/docker_photo/docker-compose_ok.jpg)
 
