@@ -6,7 +6,7 @@ networks:
 
 services:
   handyman-service:
-    build: handyman-service:latest
+    build: ../../HandymanService
     container_name: handyman-service
     restart: always
     environment:
@@ -21,7 +21,7 @@ services:
     depends_on:
       - postgres
   rancher-service:
-    build: rancher-service:latest
+    build: ../../RancherService
     container_name: rancher-service
     restart: always
     environment:
@@ -36,7 +36,7 @@ services:
     depends_on:
       - postgres
   landscape-service:
-    build: landscape-service:latest
+    build: ../../LandscapeService
     container_name: landscape-service
     restart: always
     environment:
